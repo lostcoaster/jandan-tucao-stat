@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         Jandan Tucao Stat
-// @namespace    http://tampermonkey.net/
-// @version      0.1
+// @namespace    http://github.com/lostcoaster/
+// @version      0.1.1
 // @description  Display tucao stats and reply notification in Jandan
 // @author       lc
 // @match        http://jandan.net/pic*
 // @match        http://jandan.net/duan*
 // @grant        none
+// @updateURL    https://github.com/lostcoaster/jandan-tucao-stat/raw/master/jandan-tucao-stat.user.js
 // ==/UserScript==
 
 (function() {
