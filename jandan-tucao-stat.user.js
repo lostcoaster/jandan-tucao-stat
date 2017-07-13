@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jandan Tucao Stat
 // @namespace    http://github.com/lostcoaster/
-// @version      0.1.1
+// @version      0.1.2
 // @description  Display tucao stats and reply notification in Jandan
 // @author       lc
 // @match        http://jandan.net/pic*
@@ -146,9 +146,15 @@
             this.disp_brief();
         },
         disp_detail: function(){
-            for(var i = 0; i<this.storage.unread.length; ++i){
-                console.log(this.storage.unread[i] + ' is unread.');
+            detailElem.height(this.storage.unread.length * 30 - 5);
+            detailElem.empty();
+            for (var i = 0; i<this.storage.unread.length; ++i){
+                var en = $('<div class="tustat-unread"> <a href="' + 
+                           'http://jandan.net/pic/page-'+page.id+'#comment-3506928'
+                           '" target="_new"> #0000000 </a> </div>');
+                
             }
+            detailElem.show();
         },
         disp_brief: function(){
             if(this.storage.unread.length > 0){
