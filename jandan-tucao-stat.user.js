@@ -59,6 +59,7 @@
         add: function(form){
             var tid = assert_find(form, 'button').data('id');
             var nick = assert_find(form, '.tucao-nickname').val();
+            var page = Number(assert_find($('body'), '.current-comment-page:eq(0)', 1).text().replace(/[\[\]]/g,''));
             if(this.storage.active.hasOwnProperty(tid)){
                 this.storage.active[tid].expire = Date.now() + maxSpan;
             } else {
@@ -66,6 +67,7 @@
                     expire: Date.now() + maxSpan,
                     nick: nick,
                     last_update: Date.now(),
+                    page: page
                 };
             }
             this.save();
@@ -101,7 +103,7 @@
                     continue;
                 }
                 if(this.storage.unread.indexOf(k) >= 0){
-                    continue;
+                    continue; // we are not removing an unread but inactive one
                 }
                 if(this.storage.active[k].expire <= now){
                     this.deactivate(k);
@@ -152,18 +154,20 @@
             detailElem.height(this.storage.unread.length * 30 - 5);
             detailElem.empty();
             for (var i = 0; i<this.storage.unread.length; ++i){
-                var item = this.storage.unread[i];
+                var tid = this.storage.unread[i];
+                var item = this.storage.active[tid];
                 var en = $('<div class="tustat-unread"> <a href="' + 
-                           'http://jandan.net/pic/page-'+ item.page +'#comment-' + item.tid
-                           '" target="_new"> #'+ item.tid +' </a> </div>'); // item.page still undone
+                           'http://jandan.net/pic/page-'+ item.page +'#comment-' + tid
+                           '" target="_new"> #'+ tid +' </a> </div>'); // item.page still undone
                 en.css({
                     margin: '5px auto',
                     height: '20px',
-                    
                 })
                 detailElem.append(en);
             }
             detailElem.show();
+            this.storage.unread = [];
+            this.save();
         },
         disp_brief: function(){
             if(this.storage.unread.length > 0){
