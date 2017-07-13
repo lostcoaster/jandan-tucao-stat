@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jandan Tucao Stat
 // @namespace    http://github.com/lostcoaster/
-// @version      0.1.1
+// @version      0.2.0
 // @description  Display tucao stats and reply notification in Jandan
 // @author       lc
 // @match        http://jandan.net/pic*
@@ -59,6 +59,7 @@
         add: function(form){
             var tid = assert_find(form, 'button').data('id');
             var nick = assert_find(form, '.tucao-nickname').val();
+            var page = Number(assert_find($('body'), '.current-comment-page:eq(0)', 1).text().replace(/[\[\]]/g,''));
             if(this.storage.active.hasOwnProperty(tid)){
                 this.storage.active[tid].expire = Date.now() + maxSpan;
             } else {
@@ -66,6 +67,7 @@
                     expire: Date.now() + maxSpan,
                     nick: nick,
                     last_update: Date.now(),
+                    page: page
                 };
             }
             this.save();
@@ -101,7 +103,7 @@
                     continue;
                 }
                 if(this.storage.unread.indexOf(k) >= 0){
-                    continue;
+                    continue; // we are not removing an unread but inactive one
                 }
                 if(this.storage.active[k].expire <= now){
                     this.deactivate(k);
@@ -146,9 +148,26 @@
             this.disp_brief();
         },
         disp_detail: function(){
-            for(var i = 0; i<this.storage.unread.length; ++i){
-                console.log(this.storage.unread[i] + ' is unread.');
+            if (this.storage.unread.length == 0){
+                return;
             }
+            detailElem.height(this.storage.unread.length * 30 - 5);
+            detailElem.empty();
+            for (var i = 0; i<this.storage.unread.length; ++i){
+                var tid = this.storage.unread[i];
+                var item = this.storage.active[tid];
+                var en = $('<div class="tustat-unread"> <a href="' + 
+                           'http://jandan.net/pic/page-'+ item.page +'#comment-' + tid
+                           '" target="_new"> #'+ tid +' </a> </div>'); // item.page still undone
+                en.css({
+                    margin: '5px auto',
+                    height: '20px',
+                })
+                detailElem.append(en);
+            }
+            detailElem.show();
+            this.storage.unread = [];
+            this.save();
         },
         disp_brief: function(){
             if(this.storage.unread.length > 0){
@@ -161,10 +180,11 @@
     };
 
     var notiElem = $('<div class="tustat-note" style="cursor: pointer; border: 2px solid darkorange;border-radius: 10px;position:fixed;right: 50px;bottom: 20px;width: 130px;height: 20px;box-shadow: 0px 0px 4px 1px darkorange;"/>');
-    notiElem.click(function(){memo.disp_detail();});
+    notiElem.click(function(){if(detailElem.is(':visible'))detailElem.hide();else memo.disp_detail();});
     $('body').append(notiElem);
     var detailElem = $('<div class="tustat-detail" style="border: 2px solid darkorange;border-radius: 10px;position:fixed;right: 50px;bottom: 50px;width: 130px;height: 320px;box-shadow: 0px 0px 4px 1px darkorange;"/>');
     $('body').append(detailElem);
+    detailElem.hide();
     $('li').on('DOMNodeInserted', function(v){if($(v.target).hasClass('tucao-form'))memo.handle($(v.target));});
     memo.load();
     memo.scan();
