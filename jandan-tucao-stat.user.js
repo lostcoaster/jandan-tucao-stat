@@ -146,13 +146,22 @@
             this.disp_brief();
         },
         disp_detail: function(){
+            if (this.storage.unread.length == 0){
+                return;
+            }
             detailElem.height(this.storage.unread.length * 30 - 5);
             detailElem.empty();
             for (var i = 0; i<this.storage.unread.length; ++i){
+                var item = this.storage.unread[i];
                 var en = $('<div class="tustat-unread"> <a href="' + 
-                           'http://jandan.net/pic/page-'+page.id+'#comment-3506928'
-                           '" target="_new"> #0000000 </a> </div>');
-                
+                           'http://jandan.net/pic/page-'+ item.page +'#comment-' + item.tid
+                           '" target="_new"> #'+ item.tid +' </a> </div>'); // item.page still undone
+                en.css({
+                    margin: '5px auto',
+                    height: '20px',
+                    
+                })
+                detailElem.append(en);
             }
             detailElem.show();
         },
@@ -167,10 +176,11 @@
     };
 
     var notiElem = $('<div class="tustat-note" style="cursor: pointer; border: 2px solid darkorange;border-radius: 10px;position:fixed;right: 50px;bottom: 20px;width: 130px;height: 20px;box-shadow: 0px 0px 4px 1px darkorange;"/>');
-    notiElem.click(function(){memo.disp_detail();});
+    notiElem.click(function(){if(detailElem.is(':visible'))detailElem.hide();else memo.disp_detail();});
     $('body').append(notiElem);
     var detailElem = $('<div class="tustat-detail" style="border: 2px solid darkorange;border-radius: 10px;position:fixed;right: 50px;bottom: 50px;width: 130px;height: 320px;box-shadow: 0px 0px 4px 1px darkorange;"/>');
     $('body').append(detailElem);
+    detailElem.hide();
     $('li').on('DOMNodeInserted', function(v){if($(v.target).hasClass('tucao-form'))memo.handle($(v.target));});
     memo.load();
     memo.scan();
