@@ -157,12 +157,12 @@
                 var tid = this.storage.unread[i];
                 var item = this.storage.active[tid];
                 var en = $('<div class="tustat-unread"> <a href="' + 
-                           'http://jandan.net/pic/page-'+ item.page +'#comment-' + tid
+                           'http://jandan.net/pic/page-'+ item.page +'#comment-' + tid +
                            '" target="_new"> #'+ tid +' </a> </div>'); // item.page still undone
                 en.css({
                     margin: '5px auto',
                     height: '20px',
-                })
+                });
                 detailElem.append(en);
             }
             detailElem.show();
