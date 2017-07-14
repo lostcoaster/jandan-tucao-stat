@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jandan Tucao Stat
 // @namespace    http://github.com/lostcoaster/
-// @version      0.2.1
+// @version      0.2.2
 // @description  Display tucao stats and reply notification in Jandan
 // @author       lc
 // @match        http://jandan.net/pic*
@@ -46,16 +46,28 @@
             active:{},
             unread: [],
             last_scan: 0,
+            version: 1,
         },
         load: function(){
             var v = localStorage.getItem(this.name);
             if (v){
                 this.storage = JSON.parse(v);
             }
+            this.upgrade_store();
         },
         save: function(){
             localStorage.setItem(this.name, JSON.stringify(this.storage));
         },
+        upgrade_store: function(){
+            // allows upgrade from old style storage to newer version
+            if (!this.storage.version){
+                // version 0, lacks active.path
+                for(var tid in this.storage.active){
+                    if(!this.storage.active.hasOwnProperty(tid)) continue;
+                    this.storage.active[tid].path = this.storage.active[tid].page > 2000 ? 'http://jandan.net/duan' : 'http://jandan.net/pic';
+                }
+            }
+        }
         add: function(form){
             var tid = assert_find(form, 'button').data('id');
             var nick = assert_find(form, '.tucao-nickname').val();
@@ -67,7 +79,8 @@
                     expire: Date.now() + maxSpan,
                     nick: nick,
                     last_update: Date.now(),
-                    page: page
+                    page: page,
+                    path: location.href.substr(0, location.href.lastIndexOf('/')),
                 };
             }
             this.save();
@@ -157,7 +170,7 @@
                 var tid = this.storage.unread[i];
                 var item = this.storage.active[tid];
                 var en = $('<div class="tustat-unread"> <a href="' + 
-                           'http://jandan.net/pic/page-'+ item.page +'#comment-' + tid +
+                           item.path + '/page-'+ item.page +'#comment-' + tid +
                            '" target="_new"> #'+ tid +' </a> </div>'); // item.page still undone
                 en.css({
                     margin: '5px auto',
