@@ -10,4 +10,4 @@ WIP:
 - Supporting posts in addition to comments.
 - History lib of comments and posts.
 - Mark favorite posts/comments.
-- Crowd-defined tags and filters (requiring sync server, involving CSRF, might not be pratical)
+- Crowd-defined tags and filters (requiring sync server, involving CORS, might not be pratical)
