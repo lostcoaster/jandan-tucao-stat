@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jandan Tucao Stat
 // @namespace    http://github.com/lostcoaster/
-// @version      0.2.2
+// @version      0.2.3
 // @description  Display tucao stats and reply notification in Jandan
 // @author       lc
 // @match        http://jandan.net/pic*
@@ -67,7 +67,7 @@
                     this.storage.active[tid].path = this.storage.active[tid].page > 2000 ? 'http://jandan.net/duan' : 'http://jandan.net/pic';
                 }
             }
-        }
+        },
         add: function(form){
             var tid = assert_find(form, 'button').data('id');
             var nick = assert_find(form, '.tucao-nickname').val();
