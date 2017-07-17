@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jandan Tucao Stat
 // @namespace    http://github.com/lostcoaster/
-// @version      0.2.3
+// @version      0.2.4
 // @description  Display tucao stats and reply notification in Jandan
 // @author       lc
 // @match        http://jandan.net/pic*
@@ -80,7 +80,7 @@
                     nick: nick,
                     last_update: Date.now(),
                     page: page,
-                    path: location.href.substr(0, location.href.lastIndexOf('/')),
+                    path: location.href.match(/(^.*\/(duan|pic)).*/)[1],
                 };
             }
             this.save();
