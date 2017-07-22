@@ -2,7 +2,7 @@
 A tampermonkey script to augment the new comment system of Jandan.net
 
 Current feature:
-- Shows notification when someone replies your comment.
+- Show notification when someone replies your comment.
 - Quick jump to replying comment.
 - Show quoted comments when mouse over the "@" symbol
 
