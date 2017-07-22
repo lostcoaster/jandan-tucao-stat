@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Jandan Tucao Stat
 // @namespace    http://github.com/lostcoaster/
-// @version      0.2.4
-// @description  Display tucao stats and reply notification in Jandan
+// @version      0.3.0
+// @description  Augment jandan tucao system
 // @author       lc
 // @match        http://jandan.net/pic*
 // @match        http://jandan.net/duan*
@@ -10,7 +10,7 @@
 // @updateURL    https://github.com/lostcoaster/jandan-tucao-stat/raw/master/jandan-tucao-stat.user.js
 // ==/UserScript==
 
-(function() {
+$(function() {
     'use strict';
     var maxSpan = 72 * 3600 * 1000; // 72 hours
     var maxInactive = 12 * 3600 * 1000; // 12 hours
@@ -60,13 +60,8 @@
         },
         upgrade_store: function(){
             // allows upgrade from old style storage to newer version
-            if (!this.storage.version){
-                // version 0, lacks active.path
-                for(var tid in this.storage.active){
-                    if(!this.storage.active.hasOwnProperty(tid)) continue;
-                    this.storage.active[tid].path = this.storage.active[tid].page > 2000 ? 'http://jandan.net/duan' : 'http://jandan.net/pic';
-                }
-            }
+            // currently nothing
+            this.save();
         },
         add: function(form){
             var tid = assert_find(form, 'button').data('id');
@@ -191,6 +186,34 @@
             }
         }
     };
+    
+    var quotation = {
+        elem: $('<div class="tustat-quote" style="position:fixed;border: 2px solid darkorange;border-radius: 10px;"/>'),
+        show: function(cid, x, y){
+            var text = $('a[name="'+cid+'"]').parents('.tucao-row').find('.tucao-content').text();
+            this.elem.text(text);
+            this.elem.css({
+                left: x+'px',
+                top: y+'px',
+            });
+            $('body').append(this.elem);
+        },
+        hide: function(){$('.tustat-quote').remove();},
+    };
+    
+    
+    function handleNewForm(ev){
+        var tar = $(ev.target);
+        if(tar.hasClass('tucao-form'))memo.handle(tar);
+        tar.find('.tucao-link').mouseenter(function(ev){
+            var url = ev.target.href;
+            quotation.show(url.substr(url.lastIndexOf('#')+1), ev.clientX, ev.clientY);
+        }).mouseout(function(ev){
+            quotation.hide();
+        })
+    }
+    
+    function dispQuotation()
 
     var notiElem = $('<div class="tustat-note" style="cursor: pointer; border: 2px solid darkorange;border-radius: 10px;position:fixed;right: 50px;bottom: 20px;width: 130px;height: 20px;box-shadow: 0px 0px 4px 1px darkorange;"/>');
     notiElem.click(function(){if(detailElem.is(':visible'))detailElem.hide();else memo.disp_detail();});
@@ -198,12 +221,14 @@
     var detailElem = $('<div class="tustat-detail" style="border: 2px solid darkorange;border-radius: 10px;position:fixed;right: 50px;bottom: 50px;width: 130px;height: 320px;box-shadow: 0px 0px 4px 1px darkorange;"/>');
     $('body').append(detailElem);
     detailElem.hide();
-    $('li').on('DOMNodeInserted', function(v){if($(v.target).hasClass('tucao-form'))memo.handle($(v.target));});
+    $('li').on('DOMNodeInserted', handleNewForm);
     memo.load();
     memo.scan();
     memo.disp_brief();
+    
+    
 
     if(runTest){
         window.tustat_memo = memo;
     }
-})();
+});
