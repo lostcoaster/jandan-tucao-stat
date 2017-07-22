@@ -186,7 +186,7 @@ $(function() {
             }
         }
     };
-    
+
     var quotation = {
         elem: $('<div class="tustat-quote" style="position:fixed;border: 2px solid darkorange;border-radius: 10px;"/>'),
         show: function(cid, x, y){
@@ -200,8 +200,7 @@ $(function() {
         },
         hide: function(){$('.tustat-quote').remove();},
     };
-    
-    
+
     function handleNewForm(ev){
         var tar = $(ev.target);
         if(tar.hasClass('tucao-form'))memo.handle(tar);
@@ -210,7 +209,7 @@ $(function() {
             quotation.show(url.substr(url.lastIndexOf('#')+1), ev.clientX, ev.clientY);
         }).mouseout(function(ev){
             quotation.hide();
-        })
+        });
     }
 
     var notiElem = $('<div class="tustat-note" style="cursor: pointer; border: 2px solid darkorange;border-radius: 10px;position:fixed;right: 50px;bottom: 20px;width: 130px;height: 20px;box-shadow: 0px 0px 4px 1px darkorange;"/>');
@@ -223,8 +222,6 @@ $(function() {
     memo.load();
     memo.scan();
     memo.disp_brief();
-    
-    
 
     if(runTest){
         window.tustat_memo = memo;
