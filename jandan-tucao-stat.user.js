@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jandan Tucao Stat
 // @namespace    http://github.com/lostcoaster/
-// @version      0.3.0
+// @version      0.3.1
 // @description  Augment jandan tucao system
 // @author       lc
 // @match        http://jandan.net/pic*
@@ -212,8 +212,6 @@ $(function() {
             quotation.hide();
         })
     }
-    
-    function dispQuotation()
 
     var notiElem = $('<div class="tustat-note" style="cursor: pointer; border: 2px solid darkorange;border-radius: 10px;position:fixed;right: 50px;bottom: 20px;width: 130px;height: 20px;box-shadow: 0px 0px 4px 1px darkorange;"/>');
     notiElem.click(function(){if(detailElem.is(':visible'))detailElem.hide();else memo.disp_detail();});
