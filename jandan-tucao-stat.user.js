@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jandan Tucao Stat
 // @namespace    http://github.com/lostcoaster/
-// @version      0.3.2
+// @version      0.3.3
 // @description  Augment jandan tucao system
 // @author       lc
 // @match        http://jandan.net/pic*
@@ -138,18 +138,20 @@ $(function() {
             var info = this.storage.active[tid];
             info.last_update = info.last_update || 0;
             var reg = new RegExp('<a href="#tucao-\\d+" class="tucao-link">@'+info.nick+'</a>');
+            var updated = false;
             for(var i = 0; i < comments.length; ++i){
                 if(comments[i].comment_date_int <= info.last_update){
                     continue;
                 }
                 if(comments[i].comment_content.search(reg) >= 0){
                     this.storage.unread.push(tid);
+                    updated = true;
                     break;
                 }
             }
             info.last_update = comments[comments.length-1].comment_date_int;
             this.save();
-            if(info.last_update * 1000 + maxInactive < Date.now()){
+            if(!updated && info.last_update * 1000 + maxInactive < Date.now()){
                 // remove inactive entries
                 this.deactivate(tid);
             }
