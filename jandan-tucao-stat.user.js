@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jandan Tucao Stat
 // @namespace    http://github.com/lostcoaster/
-// @version      0.3.3
+// @version      0.3.4
 // @description  Augment jandan tucao system
 // @author       lc
 // @match        http://jandan.net/pic*
@@ -192,7 +192,7 @@ $(function() {
     var quotation = {
         elem: $('<div class="tustat-quote" style="position:fixed;border: 2px solid darkorange;border-radius: 10px;background:white;"/>'),
         show: function(cid, x, y){
-            var text = $('a[name="'+cid+'"]').parents('.tucao-row').find('.tucao-content').text();
+            var text = $('a[name="'+cid+'"]').parents('.tucao-row').find('.tucao-content:eq(0)').text();
             this.elem.text(text);
             this.elem.css({
                 left: x+'px',
