@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jandan Tucao Stat
 // @namespace    http://github.com/lostcoaster/
-// @version      0.4.0
+// @version      0.4.1
 // @description  Augment jandan tucao system
 // @author       lc
 // @match        http://jandan.net/pic*
