@@ -171,6 +171,7 @@ $(function () {
             if (this.storage.unread.length === 0) {
                 return;
             }
+            var detailElem = $('.tustat-detail');
             detailElem.height(this.storage.unread.length * 30 - 5);
             detailElem.empty();
             for (var i = 0; i < this.storage.unread.length; ++i) {
@@ -190,6 +191,7 @@ $(function () {
             this.save();
         },
         disp_brief: function () {
+            var notiElem = $('.tustat-note');
             if (this.storage.unread.length > 0) {
                 notiElem.show();
                 notiElem.text('目前有' + this.storage.unread.length + '条回复');
