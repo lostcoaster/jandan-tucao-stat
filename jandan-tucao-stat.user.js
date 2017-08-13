@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         Jandan Tucao Stat
 // @namespace    http://github.com/lostcoaster/
-// @version      0.4.1
+// @version      0.4.2
 // @description  Augment jandan tucao system
 // @author       lc
 // @match        http://jandan.net/pic*
 // @match        http://jandan.net/duan*
-// @grant        none
+// @grant        GM_xmlhttpRequest
 // @updateURL    https://github.com/lostcoaster/jandan-tucao-stat/raw/master/jandan-tucao-stat.user.js
 // ==/UserScript==
 
@@ -28,6 +28,7 @@ $(function () {
 
     function sequential(func, array) {
         // util to do sequential async
+        // func must return a promise or deferred
         function callNext(i) {
             return new Promise(function (resolve) {
                 func(array[i]).then(() => {
@@ -200,6 +201,7 @@ $(function () {
             }
         },
         initialize: function(){
+            this.load();
             var mThis = this;
             var notiElem = $('<div class="tustat-note" style="cursor: pointer; border: 2px solid darkorange;border-radius: 10px;position:fixed;right: 50px;bottom: 20px;width: 130px;height: 20px;box-shadow: 0px 0px 4px 1px darkorange;"/>');
             notiElem.click(function () {
@@ -214,7 +216,6 @@ $(function () {
                 if (tar.hasClass('tucao-form')) mThis.handle(tar);
             });
 
-            this.load();
             this.scan();
             this.disp_brief();
         }
@@ -263,13 +264,14 @@ $(function () {
                 author_box = $(author_box);
                 var idcode = assert_find(author_box, 'strong', 1).attr('title').substr(4);
                 if (mThis.list.includes(idcode)){
-                    author_box.append('<div class="tustat-block" data-idc="'+idcode+'">[解除屏蔽]</div>');
+                    author_box.append('<div class="tustat-block" data-idc="'+idcode+'" style="cursor: pointer">[解除屏蔽]</div>');
                     // hide the comment
                     var e = author_box.siblings('.text');
                     if (e.find('p.bad_content').length === 0){ // not already hidden
                         // the following code is copied from jandan's page code, to keep styles consistent (totally not out of laziness)
                         e.find('.righttext').after('<p class="bad_content" style="color:#ddd">该用户被你屏蔽.  <a href="javascript:;" class="view_bad">[手贱一回]</a></p>');
                         var r = e.find("p").not('.bad_content');
+                        r.hide();
                         e.find(".view_bad").click(function () {
                             if (this.innerHTML === '[手贱一回]' || this.innerHTML === '[再手贱一回]') {
                                 r.show();
@@ -289,10 +291,10 @@ $(function () {
                         });
                     }
                 } else {
-                    author_box.append('<div class="tustat-block" data-idc="'+idcode+'">[屏蔽]</div>');
+                    author_box.append('<div class="tustat-block" data-idc="'+idcode+'" style="cursor: pointer">[屏蔽]</div>');
                 }
 
-                assert_find(author_box, '.tustat-bloc', 1).click(function(ev){
+                assert_find(author_box, '.tustat-block', 1).click(function(ev){
                     var tar = $(ev.target);
                     if (mThis.list.includes(tar.data('idc'))){
                         mThis.list.splice(mThis.list.indexOf(tar.data('idc')));
@@ -310,7 +312,7 @@ $(function () {
     };
 
     // select modules to be used here
-    var enabled_modules = [memo, quotation];
+    var enabled_modules = [memo, quotation, blackList];
     // start initializing
     for (var i = 0; i < enabled_modules.length; ++i){
         enabled_modules[i].initialize();
