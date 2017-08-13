@@ -44,6 +44,41 @@ $(function () {
         return pro;
     }
 
+    /**
+     *
+     * @param id comment id like '1234567'
+     * @param sub like 'pic' or 'duan'
+     * @param hint hint of where the search should start, if not provided, the search might be longer
+     * @returns Promise a promise, resolved with the correct page or -1 (if not found)
+     */
+    function search_comment(id, sub, hint){
+        return new Promise((resolve)=>{
+            let call;
+            let hi, lo, current;
+            function check(data){
+                let reg = /<a href="http:\/\/jandan\.net\/pic\/page-\d+#comment-\d+">(\d+)<\/a>/gi;
+                let links = $('body').html().match(reg);
+                const last = reg.exec(links[0])[1], first = reg.exec(links[links.length - 1])[1];
+                if (last < id) {
+                    // in larger pages
+                    // todo : hi and lo should be sentinels and not valid.
+                    current = Math.floor((current + hi) / 2);
+                } else if (first > id) {
+                    current = Math.floor((current + lo) / 2);
+                } else {
+                    // check this page , return current or -1
+                    for (let i = 0 ; i < links.length; ++i) {
+                        if (reg.exec(links[i])[1] === id) {
+                            resolve(current);
+                            return;
+                        }
+                    }
+                    resolve(-1);
+                }
+            }
+        });
+    }
+
     var memo = {
         name: "tustat_history",
         storage: {
@@ -180,7 +215,7 @@ $(function () {
                 var item = this.storage.active[tid];
                 var en = $('<div class="tustat-unread"> <a href="' +
                     item.path + '/page-' + item.page + '#comment-' + tid +
-                    '" target="_new"> #' + tid + ' </a> </div>'); // item.page still undone
+                    '" target="_new"> 在#' + tid + '中的回复 </a> </div>');
                 en.css({
                     margin: '5px auto',
                     height: '20px',
